@@ -1,7 +1,6 @@
 // Add Express
 const express = require("express");
 
-const client = new Client();
 // Initialize Express
 const app = express();
 // Create GET request
