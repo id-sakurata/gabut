@@ -1,7 +1,5 @@
 // Add Express
 const express = require("express");
-// Add Whatsapp-web.js
-const { Client } = require('whatsapp-web.js');
 
 const client = new Client();
 // Initialize Express
