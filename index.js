@@ -26,9 +26,90 @@ const client = new Client({
 const app = express();
 // Create GET request
 app.get("/", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "index.html"), {
-    root: __dirname
-  });
+  const html = `
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>Whatsapp API by Ngekoding</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- This parts is optional, just for improve the styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: 'Montserrat', sans-serif;
+        padding: 20px;
+      }
+      #app {
+        max-width: 500px;
+        margin: 20px auto;
+      }
+      #qrcode {
+        display: none; /* Showed when qr code received */
+        width: 100%;
+        margin: 10px 0;
+        border: 1px solid #efefef;
+        border-radius: 4px;
+      }
+      ul.logs {
+        max-height: 150px;
+        padding: 15px 15px 15px 30px;
+        margin-top: 5px;
+        border-radius: 4px;
+        overflow-y: auto;
+        background: #efefef;
+        color: #666;
+        font-size: 14px;
+      }
+      ul.logs li:first-child {
+        color: green;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div id="app">
+      <h1>Whatsapp API</h1>
+      <p>Powered by ME</p>
+      <img src="" alt="QR Code" id="qrcode">
+      <h3>Logs:</h3>
+      <ul class="logs"></ul>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" crossorigin="anonymous"></script>
+    <script>
+      $(document).ready(function() {
+        var source = new EventSource('/initialize');
+        source.onmessage = function (event) {
+          try {
+            const data = JSON.parse(event.data);
+            $('.logs').prepend($('<li>').text(data.event));
+            switch (data.event) {
+              case 'QR':
+                $("#qrcode").prop('src', data.qr).show();
+                break;
+
+              case 'ready':
+                $("#qrcode").hide().prop('src', "");
+                break;
+            }
+          } catch (error) {
+            console.log(error);
+            console.log(event);
+          }
+        }
+      });
+    </script>
+  </body>
+  </html>
+  `;
+  res.setHeader('Content-Type', 'text/html');
+  res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
+  res.end(html);
 });
 
 app.get("/initialize", async (req, res) => {
