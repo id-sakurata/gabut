@@ -1,4 +1,5 @@
 // Add Express
+const path = require('path');
 const express = require("express");
 const { Client, MessageMedia, LocalAuth } = require('whatsapp-web.js');
 const QRCode = require('qrcode');
@@ -25,7 +26,7 @@ const client = new Client({
 const app = express();
 // Create GET request
 app.get("/", (req, res) => {
-  res.sendFile('index.html', {
+  res.sendFile(path.join(process.cwd(), 'index.html'), {
     root: __dirname
   });
 });
