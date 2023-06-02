@@ -26,7 +26,7 @@ const client = new Client({
 const app = express();
 // Create GET request
 app.get("/", (req, res) => {
-  res.sendFile(path.join(process.cwd(), 'index.html'), {
+  res.sendFile(path.resolve(__dirname, "index.html"), {
     root: __dirname
   });
 });
